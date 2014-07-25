@@ -23,13 +23,35 @@ app.controller('mainCtrl', function($scope, itunesService){
   //First inject itunesService into your controller.
 
     //code here
-
+    $scope.getResults = itunesService.getSongs;
 
   //Now write a function that will call the method on the itunesService that is responsible for getting the data from iTunes, whenever the user clicks the submit button
   //*remember, that method should be expecting an artist name. The artist name is coming from the input box on index.html, head over there and check if that input box is tied to any specific model we could use.
   //Also note that that method should be retuning a promise, so you could use .then in this function.
+    $scope.getSongData = function(artist) {
+      $scope.getResults(artist).then(function(results) {
+        console.log(results);
+        var theArray = $scope.createArray(results.data.results);
+        console.log(theArray);
+        $scope.songData = theArray;
+      });
+    }
+
+    $scope.createArray = function(results){
+      return results.map(function(song){
+        return {
+          Play: song.previewUrl,
+          Artist: song.artistName,
+          Collection: song.collectionName,
+          AlbumArt: song.artworkUrl100,
+          Type: song.wrapperType,
+          CollectionPrice: song.collectionPrice
+        }
+      });
+    }
     
-    //Code here
+
+
 
 
   //Check that the above method is working by entering a name into the input field on your web app, and then console.log the result
@@ -50,12 +72,16 @@ app.controller('mainCtrl', function($scope, itunesService){
   //the iTunes API is going to give you a lot more details than ng-grid wants. Create a new array and then loop through the iTunes data pushing into your new array objects that look like the above data.
 
     //Code here
+  
 
+
+
+}
 
   //Once you have that final data array, you simply need to put it on the scope (or more specifically on the scope as songData). Once you do this ($scope.songData = myFinalArray) then ng-grid will see that and populate the page.
 
     //Code here
-});
+);
 
 
 
